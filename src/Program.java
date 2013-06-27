@@ -75,12 +75,25 @@ public class Program
 	cal.add(Calendar.DATE, 1 - day);
 	month--;
 	
+	System.out.print("┌───────────────────────────┬");
+	System.out.print("───────────────────────────┬");
+	System.out.println("───────────────────────────┐");
+	printThree(cal, locale, -1, year, month, day);
+	System.out.print("└───────────────────────────┴");
+	System.out.print("───────────────────────────┴");
+	System.out.println("───────────────────────────┘");
+    }
+    
+    
+    public static void printThree(Calendar cal, Locale locale, int first, int year, int month, int day)
+    {
 	String[] output = new String[8];
 	for (int i = 0; i < 8; i++)
 	    output[i] = "│";
 	int outlines = 0;
 	
-	for (int i = -1; i <= 1; i++)
+	int last = first + 3;
+	for (int i = first; i < last; i++)
 	{
 	    cal.set(Calendar.MONTH, month + i);
 	    String[] lines = printCalendar(cal, locale, year, month, day).split("\n");
@@ -98,14 +111,8 @@ public class Program
 		output[m++] += "                           │";
 	}
 	
-	System.out.print("┌───────────────────────────┬");
-	System.out.print("───────────────────────────┬");
-	System.out.println("───────────────────────────┐");
 	for (int i = 0; i < outlines; i++)
 	    System.out.println(output[i]);
-	System.out.print("└───────────────────────────┴");
-	System.out.print("───────────────────────────┴");
-	System.out.println("───────────────────────────┘");
     }
     
     
