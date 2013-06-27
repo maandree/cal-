@@ -88,24 +88,24 @@ public class Program
 	    for (int j = 0; j < m; j++)
 	    {
 		int len = lines[j].length() - lines[j].replace("\033", "").length();
-		len = 29 + len * 8;
-		String line = ("  " + lines[j] + "                           ").substring(0, len);
+		len = 27 + len * 8;
+		String line = (" " + lines[j] + "                          ").substring(0, len);
 		output[j] += line + "│";
 	    }
 	    if (outlines < m)
 		outlines = m;
 	    while (m < 8)
-		output[m++] += "                             │";
+		output[m++] += "                           │";
 	}
 	
-	System.out.print("┌─────────────────────────────┬");
-	System.out.print("─────────────────────────────┬");
-	System.out.println("─────────────────────────────┐");
+	System.out.print("┌───────────────────────────┬");
+	System.out.print("───────────────────────────┬");
+	System.out.println("───────────────────────────┐");
 	for (int i = 0; i < outlines; i++)
 	    System.out.println(output[i]);
-	System.out.print("└─────────────────────────────┴");
-	System.out.print("─────────────────────────────┴");
-	System.out.println("─────────────────────────────┘");
+	System.out.print("└───────────────────────────┴");
+	System.out.print("───────────────────────────┴");
+	System.out.println("───────────────────────────┘");
     }
     
     
