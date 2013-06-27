@@ -63,6 +63,11 @@ public class Program
 			  weekdayName, weekday, week,
 			  negOffset ? "-" : "+", offset, timeZoneName);
 	
+	String head = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
+	head += " " + year;
+	head = "             ".substring(0, (26 - head.length()) >> 1) + head + "             ";
+	System.out.println(head.substring(0, 25));
+	
 	cal.roll(Calendar.DATE, 1 - day);
 	int epochWeekday = (cal.getFirstDayOfWeek() % 7 + 5) % 7;
 	int firstWeekday = (cal.get(Calendar.DAY_OF_WEEK) % 7 + 5) % 7;
@@ -91,9 +96,11 @@ public class Program
 	    cal.add(Calendar.DATE, 1);
 	    if ((wd == 7) && (cal.get(Calendar.MONTH) == month))
 	    {   wd = 0;
-		System.out.printf("\n(%2d)", w++);
+		System.out.printf("\n(%2d)", ++w);
 	    }
 	}
+	System.out.println();
+	
 	System.out.println();
     }
     
