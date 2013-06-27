@@ -65,8 +65,8 @@ public class Program
 	
 	String head = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
 	head += " " + year;
-	head = "             ".substring(0, (26 - head.length()) >> 1) + head + "             ";
-	System.out.println(head.substring(0, 25));
+	head = "             ".substring(0, (26 - head.length()) >> 1) + head;
+	System.out.println(head);
 	
 	cal.roll(Calendar.DATE, 1 - day);
 	int epochWeekday = (cal.getFirstDayOfWeek() % 7 + 5) % 7;
