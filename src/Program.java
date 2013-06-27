@@ -47,6 +47,15 @@ public class Program
 	int second = cal.get(Calendar.SECOND);
 	int milli = cal.get(Calendar.MILLISECOND);
 	
+	String rep = "";
+	cal.add(Calendar.HOUR_OF_DAY, 1);
+	if (cal.get(Calendar.HOUR_OF_DAY) == hour)
+	    rep = "'";
+	cal.add(Calendar.HOUR_OF_DAY, -2);
+	if (cal.get(Calendar.HOUR_OF_DAY) == hour)
+	    rep = "''";
+	cal.add(Calendar.HOUR_OF_DAY, 1);
+	
 	int weekday = (cal.get(Calendar.DAY_OF_WEEK) % 7 + 5) % 7 + 1;
 	String weekdayName = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, locale);
 	int week = cal.get(Calendar.WEEK_OF_YEAR);
@@ -58,8 +67,8 @@ public class Program
 	offset = offset / 60 * 100 + offset % 60;
 	String timeZoneName = tz.getDisplayName(tz.inDaylightTime(cal.getTime()), TimeZone.SHORT, locale);
 	
-	System.out.printf("Current time:  %03d-(%02d)%s-%02d %02d:%02d:%02d.%03d, %s(%d) w%d, %s%04d %s\n\n",
-			  year, month, monthName, day, hour, minute, second, milli,
+	System.out.printf("Current time:  %03d-(%02d)%s-%02d %02d:%02d:%02d.%03d%s, %s(%d) w%d, %s%04d %s\n\n",
+			  year, month, monthName, day, hour, minute, second, milli, rep,
 			  weekdayName, weekday, week,
 			  negOffset ? "-" : "+", offset, timeZoneName);
 	
