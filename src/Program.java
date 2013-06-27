@@ -75,9 +75,9 @@ public class Program
 	cal.add(Calendar.DATE, 1 - day);
 	month--;
 	
-	String[] output = new String[9];
-	for (int i = 0; i < 9; i++)
-	    output[i] = "";
+	String[] output = new String[8];
+	for (int i = 0; i < 8; i++)
+	    output[i] = "│";
 	int outlines = 0;
 	
 	for (int i = -1; i <= 1; i++)
@@ -90,16 +90,22 @@ public class Program
 		int len = lines[j].length() - lines[j].replace("\033", "").length();
 		len = 29 + len * 8;
 		String line = ("  " + lines[j] + "                           ").substring(0, len);
-		output[j] += line;
+		output[j] += line + "│";
 	    }
 	    if (outlines < m)
 		outlines = m;
-	    while (m < 9)
-		output[m++] += "                             ";
+	    while (m < 8)
+		output[m++] += "                             │";
 	}
 	
-	for (int i = 0; i <= outlines; i++)
+	System.out.print("┌─────────────────────────────┬");
+	System.out.print("─────────────────────────────┬");
+	System.out.println("─────────────────────────────┐");
+	for (int i = 0; i < outlines; i++)
 	    System.out.println(output[i]);
+	System.out.print("└─────────────────────────────┴");
+	System.out.print("─────────────────────────────┴");
+	System.out.println("─────────────────────────────┘");
     }
     
     
