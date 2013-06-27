@@ -79,7 +79,22 @@ public class Program
 	cal.add(Calendar.DATE, weekOffset - 7);
 	System.out.println();
 	
-	
+	System.out.printf("(%2d)", firstWeek);
+	for (int i = 0; i < weekOffset; i++)
+	    System.out.print("   ");
+	month--;
+	int d = 1, wd = firstWeekday, w = firstWeek;
+	while (cal.get(Calendar.MONTH) == month)
+	{
+	    System.out.printf(" %2d", d++);
+	    wd++;
+	    cal.add(Calendar.DATE, 1);
+	    if ((wd == 7) && (cal.get(Calendar.MONTH) == month))
+	    {   wd = 0;
+		System.out.printf("\n(%2d)", w++);
+	    }
+	}
+	System.out.println();
     }
     
 }
