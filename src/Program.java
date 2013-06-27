@@ -63,12 +63,26 @@ public class Program
 			  weekdayName, weekday, week,
 			  negOffset ? "-" : "+", offset, timeZoneName);
 	
+	cal.add(Calendar.DATE, 1 - day);
+	month--;
+	
+	for (int i = -1; i <= 1; i++)
+	{
+	    cal.set(Calendar.MONTH, month + i);
+	    printCalendar(cal, locale, year, month, day);
+	}
+    }
+    
+    
+    public static void printCalendar(final Calendar cal, final Locale locale, int y, int m, int d)
+    {
+	int month = cal.get(Calendar.MONTH);
+	int year = cal.get(Calendar.YEAR);
 	String head = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
 	head += " " + year;
 	head = "             ".substring(0, (26 - head.length()) >> 1) + head;
 	System.out.println(head);
 	
-	cal.roll(Calendar.DATE, 1 - day);
 	int epochWeekday = (cal.getFirstDayOfWeek() % 7 + 5) % 7;
 	int firstWeekday = (cal.get(Calendar.DAY_OF_WEEK) % 7 + 5) % 7;
 	int firstWeek = cal.get(Calendar.WEEK_OF_YEAR);
@@ -87,11 +101,13 @@ public class Program
 	System.out.printf("(%2d)", firstWeek);
 	for (int i = 0; i < weekOffset; i++)
 	    System.out.print("   ");
-	month--;
-	int d = 1, wd = firstWeekday, w = firstWeek;
+	int day = 1, wd = firstWeekday, w = firstWeek;
 	while (cal.get(Calendar.MONTH) == month)
 	{
-	    System.out.printf(" %2d", d++);
+	    if ((y == year) && (m == month) && (d == day))
+		System.out.printf(" \033[01;07m%2d\033[21;27m", day++);
+	    else
+		System.out.printf(" %2d", day++);
 	    wd++;
 	    cal.add(Calendar.DATE, 1);
 	    if ((wd == 7) && (cal.get(Calendar.MONTH) == month))
