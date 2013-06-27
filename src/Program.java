@@ -78,7 +78,20 @@ public class Program
 	System.out.print("┌───────────────────────────┬");
 	System.out.print("───────────────────────────┬");
 	System.out.println("───────────────────────────┐");
-	printThree(cal, locale, -1, year, month, day);
+	
+	if (args.length == 0)
+	    printThree(cal, locale, -1, year, month, day);
+	else
+	{   int m = -month;
+	    for (int i = 0; i < 4; i++)
+	    {
+		printThree(cal, locale, m + 3 * i, year, month, day);
+		if (i < 3)
+		{   System.out.print("├───────────────────────────┼");
+		    System.out.print("───────────────────────────┼");
+		    System.out.println("───────────────────────────┤");
+	}   }	}
+	
 	System.out.print("└───────────────────────────┴");
 	System.out.print("───────────────────────────┴");
 	System.out.println("───────────────────────────┘");
