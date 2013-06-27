@@ -75,22 +75,44 @@ public class Program
 	cal.add(Calendar.DATE, 1 - day);
 	month--;
 	
+	String[] output = new String[9];
+	for (int i = 0; i < 9; i++)
+	    output[i] = "";
+	int outlines = 0;
+	
 	for (int i = -1; i <= 1; i++)
 	{
 	    cal.set(Calendar.MONTH, month + i);
-	    printCalendar(cal, locale, year, month, day);
+	    String[] lines = printCalendar(cal, locale, year, month, day).split("\n");
+	    int m = lines.length;
+	    for (int j = 0; j < m; j++)
+	    {
+		int len = lines[j].length() - lines[j].replace("\033", "").length();
+		len = 29 + len * 8;
+		String line = ("  " + lines[j] + "                           ").substring(0, len);
+		output[j] += line;
+	    }
+	    if (outlines < m)
+		outlines = m;
+	    while (m < 9)
+		output[m++] += "                             ";
 	}
+	
+	for (int i = 0; i <= outlines; i++)
+	    System.out.println(output[i]);
     }
     
     
-    public static void printCalendar(final Calendar cal, final Locale locale, int y, int m, int d)
+    public static String printCalendar(final Calendar cal, final Locale locale, int y, int m, int d)
     {
+	String rc = "";
+	
 	int month = cal.get(Calendar.MONTH);
 	int year = cal.get(Calendar.YEAR);
 	String head = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
 	head += " " + year;
 	head = "             ".substring(0, (26 - head.length()) >> 1) + head;
-	System.out.println(head);
+	rc += head + "\n";
 	
 	int epochWeekday = (cal.getFirstDayOfWeek() % 7 + 5) % 7;
 	int firstWeekday = (cal.get(Calendar.DAY_OF_WEEK) % 7 + 5) % 7;
@@ -98,35 +120,35 @@ public class Program
 	int weekOffset = (7 - epochWeekday + firstWeekday) % 7;
 	
 	cal.add(Calendar.DATE, -weekOffset);
-	System.out.print("Week");
+	rc += "Week";
 	for (int i = 0; i < 7; i++)
 	{
-	    System.out.print(" " + cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, locale).substring(0, 2));
+	    rc += " " + cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, locale).substring(0, 2);
 	    cal.add(Calendar.DATE, 1);
 	}
 	cal.add(Calendar.DATE, weekOffset - 7);
-	System.out.println();
+	rc += firstWeek < 10 ? "\n( " : "\n(";
 	
-	System.out.printf("(%2d)", firstWeek);
+	rc += firstWeek + ")";
 	for (int i = 0; i < weekOffset; i++)
-	    System.out.print("   ");
+	    rc += "   ";
 	int day = 1, wd = firstWeekday, w = firstWeek;
 	while (cal.get(Calendar.MONTH) == month)
 	{
 	    if ((y == year) && (m == month) && (d == day))
-		System.out.printf(" \033[01;07m%2d\033[21;27m", day++);
+	    	rc += " \033[01;07m" + (day < 10 ? " " : "") + day + "\033[21;27m";
 	    else
-		System.out.printf(" %2d", day++);
+		rc += (day < 10 ? "  " : " ") + day;
+	    day++;
 	    wd++;
 	    cal.add(Calendar.DATE, 1);
 	    if ((wd == 7) && (cal.get(Calendar.MONTH) == month))
 	    {   wd = 0;
-		System.out.printf("\n(%2d)", ++w);
+		rc += (w < 10 ? "\n( " : "\n(") + w++ + ")";
 	    }
 	}
-	System.out.println();
 	
-	System.out.println();
+	return rc;
     }
     
 }
