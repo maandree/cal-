@@ -4,7 +4,7 @@
 # without any warranty.
 
 
-SRC = Program Schedule
+SRC = Program Schedule ICalendar
 
 
 all:

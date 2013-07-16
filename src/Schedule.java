@@ -58,7 +58,7 @@ public class Schedule
      * Gets all events mark for a whole month
      * 
      * @param   year   The year in question
-     * @param   week  The week in question
+     * @param   week   The week in question
      * @return         Events
      */
     public ArrayList<Event> forWeek(int year, int week)
@@ -77,6 +77,47 @@ public class Schedule
     public ArrayList<Event> forDay(int year, int month, int day)
     {
 	return this.days.get(Integer.valueOf(year * 40 * 12 + month * 40 + day));
+    }
+    
+    
+    /**
+     * Adds an event mark for a whole month
+     * 
+     * @param   year   The year in question
+     * @param   month  The month in question
+     * @param   event  The event mark
+     * @return         Events
+     */
+    public void addMonth(int year, int month, Event event)
+    {
+	return addDay(year, month, 0, event);
+    }
+    
+    /**
+     * Adds an event mark for a whole month
+     * 
+     * @param   year   The year in question
+     * @param   week   The week in question
+     * @param   event  The event mark
+     * @return         Events
+     */
+    public void addWeek(int year, int week, Event event)
+    {
+	return this.weeks.put(Integer.valueOf(year * 60 + week), event);
+    }
+    
+    /**
+     * Adds an event that starts during a day and is not mark for a whole week or month
+     * 
+     * @param   year   The year in question
+     * @param   month  The month in question
+     * @param   day    The day in question, 0 for the whole month (programmer's sugar)
+     * @param   event  The event mark
+     * @return         Events
+     */
+    public void addDay(int year, int month, int day, Event event)
+    {
+	return this.days.put(Integer.valueOf(year * 40 * 12 + month * 40 + day), event);
     }
     
     
