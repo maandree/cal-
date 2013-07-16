@@ -84,6 +84,12 @@ public class Program
 		show_year = year;
 	    else if (arg.startsWith("--year="))
 		show_year = Integer.parseInt(arg.substring(7));
+	    else if (arg.startsWith("--date="))
+	    {   arg = arg.substring(7).replace("-", "");
+		year = Integer.parseInt(arg.substring(0, 4));
+	        month = Integer.parseInt(arg.substring(4, 6)) - 1;
+	        day = Integer.parseInt(arg.substring(6, 8));
+	    }
 	}
 	
 	System.out.print("┌───────────────────────────┬");
