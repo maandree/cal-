@@ -67,10 +67,8 @@ public class Program
 	offset = offset / 60 * 100 + offset % 60;
 	String timeZoneName = tz.getDisplayName(tz.inDaylightTime(cal.getTime()), TimeZone.SHORT, locale);
 	
-	System.out.printf("Current time:  %03d-(%02d)%s-%02d %02d:%02d:%02d.%03d%s, %s(%d) w%d, %s%04d %s\n\n",
-			  year, month, monthName, day, hour, minute, second, milli, rep,
-			  weekdayName, weekday, week,
-			  negOffset ? "-" : "+", offset, timeZoneName);
+	int Y = year, M = month, D = day, h = hour, m = minute, s = second, ms = milli, wd = weekday, w = week, o = offset;
+	String mn = monthName, wdn = weekdayName, op = negOffset ? "-" : "+", tzn = timeZoneName;
 	
 	cal.add(Calendar.DATE, 1 - day);
 	month--;
@@ -78,6 +76,14 @@ public class Program
 	Schedule schedule = new Schedule(); /* TODO populate */
 	
 	int show_year = (1 << 31) - 1;
+	boolean show_time = true;
+	boolean show_calendar = true;
+	boolean show_events = true;
+	boolean show_next = false;
+	int end_year = (1 << 31) - 1;
+	int end_month = (1 << 31) - 1;
+	int end_day = (1 << 31) - 1;
+	int end_days = 7;
 	for (String arg : args)
 	{
 	    if (arg.equals("--year"))
@@ -90,29 +96,76 @@ public class Program
 	        month = Integer.parseInt(arg.substring(4, 6)) - 1;
 	        day = Integer.parseInt(arg.substring(6, 8));
 	    }
+	    else if (arg.equals("--no-time"))
+		show_time = false;
+	    else if (arg.equals("--no-calendar"))
+		show_calendar = false;
+	    else if (arg.equals("--no-events"))
+		show_events = false;
+	    else if (arg.equals("--next"))
+		show_next = true;
+	    else if (arg.startsWith("--end="))
+	    {
+		arg = arg.substring(6).replace("-", "");
+		if (arg.length == 8)
+		    end_days = Integer.parseInt(arg);
+		else
+		{   end_days = (1 << 31) - 1;
+		    end_year = Integer.parseInt(arg.substring(0, 4));
+		    end_month = Integer.parseInt(arg.substring(4, 6)) - 1;
+		    end_day = Integer.parseInt(arg.substring(6, 8));
+	    }   }
 	}
 	
-	System.out.print("┌───────────────────────────┬");
-	System.out.print("───────────────────────────┬");
-	System.out.println("───────────────────────────┐");
+	if (show_time)
+	{
+	    System.out.printf("Current time:  %03d-(%02d)%s-%02d %02d:%02d:%02d.%03d%s, %s(%d) w%d, %s%04d %s\n",
+			      Y, M, mn, D, h, m, s, ms, rep, wdn, wd, w, op, o, tzn);
+	    
+	    if (show_calendar || show_events || show_next)
+		System.out.println();
+	}
 	
-	if (show_year == (1 << 31) - 1)
-	    printThreeMonths(cal, locale, -1, year, month, day, schedule);
-	else
-	{   int m = -month;
-	    cal.set(Calendar.YEAR, show_year);
-	    for (int i = 0; i < 4; i++)
-	    {
-		printThreeMonths(cal, locale, m + 3 * i, year, month, day, schedule);
-		if (i < 3)
-		{   System.out.print("├───────────────────────────┼");
-		    System.out.print("───────────────────────────┼");
-		    System.out.println("───────────────────────────┤");
-	}   }	}
+	if (show_calendar)
+	{
+	    System.out.print("┌───────────────────────────┬");
+	    System.out.print("───────────────────────────┬");
+	    System.out.println("───────────────────────────┐");
+	    
+	    if (show_year == (1 << 31) - 1)
+		printThreeMonths(cal, locale, -1, year, month, day, schedule);
+	    else
+	    {   int m = -month;
+		cal.set(Calendar.YEAR, show_year);
+		for (int i = 0; i < 4; i++)
+		{
+		    printThreeMonths(cal, locale, m + 3 * i, year, month, day, schedule);
+		    if (i < 3)
+		    {   System.out.print("├───────────────────────────┼");
+			System.out.print("───────────────────────────┼");
+			System.out.println("───────────────────────────┤");
+	   }   }    }
 	
-	System.out.print("└───────────────────────────┴");
-	System.out.print("───────────────────────────┴");
-	System.out.println("───────────────────────────┘");
+	    System.out.print("└───────────────────────────┴");
+	    System.out.print("───────────────────────────┴");
+	    System.out.println("───────────────────────────┘");
+	    
+	    if (show_events || show_next)
+		System.out.println();
+	}
+	
+	if (show_events)
+	{
+	    /* TODO show events */
+	    
+	    if (show_next)
+		System.out.println();
+	}
+	
+	if (show_next)
+	{
+	    /* TODO */
+	}
     }
     
     

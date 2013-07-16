@@ -64,6 +64,8 @@ public class ICalendar
 	   X-MONTH:201307
 	   SUMMARY:Bastille Day Party
 	   END:VEVENT
+	   
+	   how is recurring events done?
 	 */
     }
     
