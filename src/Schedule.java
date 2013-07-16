@@ -90,7 +90,7 @@ public class Schedule
      */
     public void addMonth(int year, int month, Event event)
     {
-	return addDay(year, month, 0, event);
+	addDay(year, month, 0, event);
     }
     
     /**
@@ -103,7 +103,10 @@ public class Schedule
      */
     public void addWeek(int year, int week, Event event)
     {
-	return this.weeks.put(Integer.valueOf(year * 60 + week), event);
+	Integer key = Integer.valueOf(year * 60 + week);
+	if (this.weeks.get(key) == null)
+	    this.weeks.put(key, new ArrayList<Event>());
+	this.days.get(key).add(event);
     }
     
     /**
@@ -117,7 +120,10 @@ public class Schedule
      */
     public void addDay(int year, int month, int day, Event event)
     {
-	return this.days.put(Integer.valueOf(year * 40 * 12 + month * 40 + day), event);
+	Integer key = Integer.valueOf(year * 40 * 12 + month * 40 + day);
+	if (this.days.get(key) == null)
+	    this.days.put(key, new ArrayList<Event>());
+	this.days.get(key).add(event);
     }
     
     
