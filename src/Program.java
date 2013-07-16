@@ -75,16 +75,26 @@ public class Program
 	cal.add(Calendar.DATE, 1 - day);
 	month--;
 	
-	Schedule schedule = new Schedule(); /* TODO populate*/
+	Schedule schedule = new Schedule(); /* TODO populate */
+	
+	int show_year = (1 << 31) - 1;
+	for (String arg : args)
+	{
+	    if (arg.equals("--year"))
+		show_year = year;
+	    else if (arg.startsWith("--year="))
+		show_year = Integer.parseInt(arg.substring(7));
+	}
 	
 	System.out.print("┌───────────────────────────┬");
 	System.out.print("───────────────────────────┬");
 	System.out.println("───────────────────────────┐");
 	
-	if (args.length == 0) /* TODO parse arguments */
+	if (show_year == (1 << 31) - 1)
 	    printThreeMonths(cal, locale, -1, year, month, day, schedule);
 	else
 	{   int m = -month;
+	    cal.set(Calendar.YEAR, show_year);
 	    for (int i = 0; i < 4; i++)
 	    {
 		printThreeMonths(cal, locale, m + 3 * i, year, month, day, schedule);
@@ -208,7 +218,7 @@ public class Program
 	String head = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
 	head += " " + year;
 	int monthlen = head.length();
-	if (month == m)
+	if ((month == m) && (year == y))
 	    head = "\033[01;07m" + head + "\033[21;27m";
 	head = "             ".substring(0, (26 - monthlen) >> 1) + colour(head, schedule.forMonth(year, month));
 	rc += head + "\n";
@@ -234,7 +244,7 @@ public class Program
 	int day = 1, wd = firstWeekday, w = firstWeek;
 	while (cal.get(Calendar.MONTH) == month)
 	{
-	    if ((y == year) && (m == month) && (d == day))
+	    if ((d == day) && (m == month) && (y == year))
 	    	rc += " " + colour("\033[01;07m" + (day < 10 ? " " : "") + day + "\033[21;27m", schedule.forDay(year, month, day));
 	    else
 		rc += colour((day < 10 ? "  " : " ") + day, schedule.forDay(year, month, day));
