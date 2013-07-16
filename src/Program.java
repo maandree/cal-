@@ -79,13 +79,13 @@ public class Program
 	System.out.print("───────────────────────────┬");
 	System.out.println("───────────────────────────┐");
 	
-	if (args.length == 0)
-	    printThree(cal, locale, -1, year, month, day);
+	if (args.length == 0) /* TODO parse arguments */
+	    printThreeMonths(cal, locale, -1, year, month, day);
 	else
 	{   int m = -month;
 	    for (int i = 0; i < 4; i++)
 	    {
-		printThree(cal, locale, m + 3 * i, year, month, day);
+		printThreeMonths(cal, locale, m + 3 * i, year, month, day);
 		if (i < 3)
 		{   System.out.print("├───────────────────────────┼");
 		    System.out.print("───────────────────────────┼");
@@ -98,7 +98,18 @@ public class Program
     }
     
     
-    public static void printThree(Calendar cal, Locale locale, int first, int year, int month, int day)
+    /**
+     * Prints three months
+     * 
+     * @param   cal     The calendar
+     * @param   locale  The locale
+     * @param   first   The first month to print
+     * @param   year    The current year
+     * @param   month   The current month
+     * @param   dday    The current day
+     * @return          String to print
+     */
+    public static void printThreeMonths(Calendar cal, Locale locale, int first, int year, int month, int day)
     {
 	String[] output = new String[8];
 	for (int i = 0; i < 8; i++)
@@ -109,7 +120,7 @@ public class Program
 	for (int i = first; i < last; i++)
 	{
 	    cal.set(Calendar.MONTH, month + i);
-	    String[] lines = printCalendar(cal, locale, year, month, day).split("\n");
+	    String[] lines = printMonth(cal, locale, year, month, day).split("\n");
 	    int m = lines.length;
 	    for (int j = 0; j < m; j++)
 	    {
@@ -129,7 +140,17 @@ public class Program
     }
     
     
-    public static String printCalendar(final Calendar cal, final Locale locale, int y, int m, int d)
+    /**
+     * Prints a month
+     * 
+     * @param   cal     The calendar
+     * @param   locale  The locale
+     * @param   y       The current year
+     * @param   m       The current month
+     * @param   d       The current day
+     * @return          String to print
+     */
+    public static String printMonth(final Calendar cal, final Locale locale, int y, int m, int d)
     {
 	String rc = "";
 	
