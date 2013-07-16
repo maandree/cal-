@@ -158,7 +158,10 @@ public class Program
 	int year = cal.get(Calendar.YEAR);
 	String head = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
 	head += " " + year;
-	head = "             ".substring(0, (26 - head.length()) >> 1) + head;
+	int monthlen = head.length();
+	if (month == m)
+	    head = "\033[01;07m" + head + "\033[21;27m";
+	head = "             ".substring(0, (26 - monthlen) >> 1) + head;
 	rc += head + "\n";
 	
 	int epochWeekday = (cal.getFirstDayOfWeek() % 7 + 5) % 7;
