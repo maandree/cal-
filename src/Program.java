@@ -75,17 +75,19 @@ public class Program
 	cal.add(Calendar.DATE, 1 - day);
 	month--;
 	
+	Schedule schedule = new Schedule(); /* TODO populate*/
+	
 	System.out.print("┌───────────────────────────┬");
 	System.out.print("───────────────────────────┬");
 	System.out.println("───────────────────────────┐");
 	
 	if (args.length == 0) /* TODO parse arguments */
-	    printThreeMonths(cal, locale, -1, year, month, day);
+	    printThreeMonths(cal, locale, -1, year, month, day, schedule);
 	else
 	{   int m = -month;
 	    for (int i = 0; i < 4; i++)
 	    {
-		printThreeMonths(cal, locale, m + 3 * i, year, month, day);
+		printThreeMonths(cal, locale, m + 3 * i, year, month, day, schedule);
 		if (i < 3)
 		{   System.out.print("├───────────────────────────┼");
 		    System.out.print("───────────────────────────┼");
@@ -95,6 +97,54 @@ public class Program
 	System.out.print("└───────────────────────────┴");
 	System.out.print("───────────────────────────┴");
 	System.out.println("───────────────────────────┘");
+    }
+    
+    
+    /**
+     * Colours a text based on events
+     * 
+     * @param   text    The text to colour
+     * @param   events  The events to base the colouring on
+     * @return          The text coloured
+     */
+    public static String colour(String text, ArrayList<Schedule.Event> events)
+    {
+	int importance = -1;
+	if (events != null)
+	    for (Schedule.Event event : events)
+		importance = event.importance > importance ? event.importance : importance;
+	
+	if (importance < 0)
+	    return text;
+	if (importance == 0)
+	    return "\033[01;34m" + text + "\033[00m";
+	if (importance == 1)
+	    return "\033[01;32m" + text + "\033[00m";
+	if (importance == 2)
+	    return "\033[01;33m" + text + "\033[00m";
+	return "\033[01;31m" + text + "\033[00m";
+    }
+    
+    
+    /**
+     * Uncolours a text
+     * 
+     * @param   text  The text
+     * @return        The text without colour
+     */
+    public static String uncolour(String text)
+    {
+	StringBuilder rc = new StringBuilder();
+	boolean esc = false;
+	char c;
+	for (int i = 0, n = text.length(); i < n; i++)
+	    if (esc)
+		esc = text.charAt(i) != 'm';
+	    else if ((c = text.charAt(i)) == '\033')
+		esc = true;
+	    else
+		rc.append(c);
+	return rc.toString();
     }
     
     
@@ -109,7 +159,7 @@ public class Program
      * @param   dday    The current day
      * @return          String to print
      */
-    public static void printThreeMonths(Calendar cal, Locale locale, int first, int year, int month, int day)
+    public static void printThreeMonths(Calendar cal, Locale locale, int first, int year, int month, int day, Schedule schedule)
     {
 	String[] output = new String[8];
 	for (int i = 0; i < 8; i++)
@@ -120,12 +170,11 @@ public class Program
 	for (int i = first; i < last; i++)
 	{
 	    cal.set(Calendar.MONTH, month + i);
-	    String[] lines = printMonth(cal, locale, year, month, day).split("\n");
+	    String[] lines = printMonth(cal, locale, year, month, day, schedule).split("\n");
 	    int m = lines.length;
 	    for (int j = 0; j < m; j++)
 	    {
-		int len = lines[j].length() - lines[j].replace("\033", "").length();
-		len = 27 + len * 8;
+		int len = 27 + lines[j].length() - uncolour(lines[j]).length();
 		String line = (" " + lines[j] + "                          ").substring(0, len);
 		output[j] += line + "│";
 	    }
@@ -150,7 +199,7 @@ public class Program
      * @param   d       The current day
      * @return          String to print
      */
-    public static String printMonth(final Calendar cal, final Locale locale, int y, int m, int d)
+    public static String printMonth(final Calendar cal, final Locale locale, int y, int m, int d, Schedule schedule)
     {
 	String rc = "";
 	
@@ -161,7 +210,7 @@ public class Program
 	int monthlen = head.length();
 	if (month == m)
 	    head = "\033[01;07m" + head + "\033[21;27m";
-	head = "             ".substring(0, (26 - monthlen) >> 1) + head;
+	head = "             ".substring(0, (26 - monthlen) >> 1) + colour(head, schedule.forMonth(year, month));
 	rc += head + "\n";
 	
 	int epochWeekday = (cal.getFirstDayOfWeek() % 7 + 5) % 7;
@@ -179,23 +228,23 @@ public class Program
 	cal.add(Calendar.DATE, weekOffset - 7);
 	rc += firstWeek < 10 ? "\n( " : "\n(";
 	
-	rc += firstWeek + ")";
+	rc += colour(Integer.toString(firstWeek), schedule.forWeek(year, firstWeek)) + ")";
 	for (int i = 0; i < weekOffset; i++)
 	    rc += "   ";
 	int day = 1, wd = firstWeekday, w = firstWeek;
 	while (cal.get(Calendar.MONTH) == month)
 	{
 	    if ((y == year) && (m == month) && (d == day))
-	    	rc += " \033[01;07m" + (day < 10 ? " " : "") + day + "\033[21;27m";
+	    	rc += " " + colour("\033[01;07m" + (day < 10 ? " " : "") + day + "\033[21;27m", schedule.forDay(year, month, day));
 	    else
-		rc += (day < 10 ? "  " : " ") + day;
+		rc += colour((day < 10 ? "  " : " ") + day, schedule.forDay(year, month, day));
 	    day++;
 	    wd++;
 	    cal.add(Calendar.DATE, 1);
 	    if ((wd == 7) && (cal.get(Calendar.MONTH) == month))
 	    {   wd = 0;
 		/* Last week is 53, not 1 */
-		rc += (++w < 10 ? "\n( " : "\n(") + w + ")";
+		rc += (++w < 10 ? "\n( " : "\n(") + colour(Integer.toString(w), schedule.forWeek(year, w)) + ")";
 	    }
 	}
 	
