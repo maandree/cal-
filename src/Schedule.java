@@ -76,7 +76,7 @@ public class Schedule
      */
     public ArrayList<Event> forDay(int year, int month, int day)
     {
-	return this.days.get(Integer.valueOf(year * 40 * 12 + month * 40 + day);
+	return this.days.get(Integer.valueOf(year * 40 * 12 + month * 40 + day));
     }
     
     
@@ -105,7 +105,7 @@ public class Schedule
 	    this.hour = hour;
 	    this.minute = minute;
 	    this.second = second;
-	    this.hour = hourEnd;
+	    this.hourEnd = hourEnd;
 	    this.minuteEnd = minuteEnd;
 	    this.secondEnd = secondEnd;
 	}
