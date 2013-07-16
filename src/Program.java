@@ -194,7 +194,8 @@ public class Program
 	    cal.add(Calendar.DATE, 1);
 	    if ((wd == 7) && (cal.get(Calendar.MONTH) == month))
 	    {   wd = 0;
-		rc += (w < 10 ? "\n( " : "\n(") + w++ + ")";
+		/* Last week is 53, not 1 */
+		rc += (++w < 10 ? "\n( " : "\n(") + w + ")";
 	    }
 	}
 	
