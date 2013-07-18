@@ -107,7 +107,7 @@ public class Program
 	    else if (arg.startsWith("--end="))
 	    {
 		arg = arg.substring(6).replace("-", "");
-		if (arg.length == 8)
+		if (arg.length() == 8)
 		    end_days = Integer.parseInt(arg);
 		else
 		{   end_days = (1 << 31) - 1;
@@ -135,11 +135,11 @@ public class Program
 	    if (show_year == (1 << 31) - 1)
 		printThreeMonths(cal, locale, -1, year, month, day, schedule);
 	    else
-	    {   int m = -month;
+	    {   int om = -month;
 		cal.set(Calendar.YEAR, show_year);
 		for (int i = 0; i < 4; i++)
 		{
-		    printThreeMonths(cal, locale, m + 3 * i, year, month, day, schedule);
+		    printThreeMonths(cal, locale, om + 3 * i, year, month, day, schedule);
 		    if (i < 3)
 		    {   System.out.print("├───────────────────────────┼");
 			System.out.print("───────────────────────────┼");
